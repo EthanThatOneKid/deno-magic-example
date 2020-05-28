@@ -1,13 +1,14 @@
-# Codecasts Backend 🤟
-> A backend system for EthanThatOneKid's Codecasts written with Deno 🦕
+# Deno Magic Example 🦕✨
+> A Deno example utilizing Magic and JWT, MongoDB, and SSR React
 
 ## (WIP)
 
 ## Develop 🔥
 1. To get started, [install deno](https://github.com/denoland/deno_install) to your machine.
+1. Clone this repository or create a new one using this repository as a [template](https://github.com/EthanThatOneKid/deno-magic-example/generate).
 1. To spin the development server, enter the following command: `deno run --allow-net --allow-write --allow-read --allow-plugin --allow-env --unstable mod.ts`
 
-## Reference 📚
+### Reference 📚
 * [MongoDB Search Queries](https://docs.mongodb.com/manual/reference/operator/query/#query-selectors)
 * [Magic Full Stack Example](https://docs.magic.link/tutorials/full-stack-node-js)
 * [Mongo API Reference](https://doc.deno.land/https/deno.land/x/mongo/mod.ts)
