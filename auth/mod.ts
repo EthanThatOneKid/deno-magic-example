@@ -30,7 +30,7 @@ const header: Jose = {
   typ: "JWT",
 };
 
-const validateDidToken = async (didToken: string) => {
+const verifyDidToken = async (didToken: string) => {
   // This works correctly:
   // const [proof, claim]: [string, Claim] = await admin.token.decode(didToken);
   // console.log({proof, claim});
@@ -40,17 +40,25 @@ const validateDidToken = async (didToken: string) => {
     // This does not work correctly:
     const userMetadata = await admin.users.getMetadataByToken(didToken);
     console.log(userMetadata);
+    return true;
   } catch (err) {
     // Current Error:
     // "The current user is not authorized to access the requested resource. Please make sure the user is authorized to all input parameter entities."
     console.log(err.data[0].message);
+    return false;
   }
 };
 
 export const login = async (ctx: Context) => {
   const { value } = await ctx.request.body();
   const { email, didToken } = JSON.parse(value);
-  await validateDidToken(didToken);
+  const isVerified = await verifyDidToken(didToken);
+  if (!isVerified) {
+    ctx.response.status = 401;
+    ctx.response.body = {
+      message: `Email ${email} is unauthorized`,
+    };
+  }
   let user: User = await findUser({ email });
   if (user === null) {
     user = await addUser({ email });
