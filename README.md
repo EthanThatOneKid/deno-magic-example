@@ -1,5 +1,5 @@
 # Deno Magic Example 🦕✨
-> A Deno example utilizing Magic and JWT, MongoDB, and SSR React
+> A Deno example utilizing Magic and JWT and MongoDB
 
 ## (WIP)
 

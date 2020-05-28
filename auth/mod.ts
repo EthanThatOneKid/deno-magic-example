@@ -1,5 +1,5 @@
 import {
-  Magic,
+  MagicAdmin,
   Router,
   config,
   makeJwt,
@@ -16,28 +16,41 @@ import {
   User,
 } from "../db/mod.ts";
 import {
+  Claim,
   MagicUser,
   DoneFunc,
   MagicUserMetadata,
 } from "../types/mod.ts";
 
 const { MAGIC_SECRET_KEY, JWT_SECRET_TOKEN } = config();
-const admin = new Magic(MAGIC_SECRET_KEY);
+const admin = new MagicAdmin(MAGIC_SECRET_KEY);
 
 const header: Jose = {
   alg: "HS256",
   typ: "JWT",
 };
 
+const validateDidToken = async (didToken: string) => {
+  // This works correctly:
+  // const [proof, claim]: [string, Claim] = await admin.token.decode(didToken);
+  // console.log({proof, claim});
+  try {
+    const validation = await admin.token.validate(didToken);
+    console.log({ validation });
+    // This does not work correctly:
+    const userMetadata = await admin.users.getMetadataByToken(didToken);
+    console.log(userMetadata);
+  } catch (err) {
+    // Current Error:
+    // "The current user is not authorized to access the requested resource. Please make sure the user is authorized to all input parameter entities."
+    console.log(err.data[0].message);
+  }
+};
+
 export const login = async (ctx: Context) => {
   const { value } = await ctx.request.body();
   const { email, didToken } = JSON.parse(value);
-  // try {
-  //   const userMetadata = await admin.users.getMetadataByToken(didToken);
-  //   console.log(userMetadata);
-  // } catch (err) {
-  //   console.log(err.data[0].message);
-  // }
+  await validateDidToken(didToken);
   let user: User = await findUser({ email });
   if (user === null) {
     user = await addUser({ email });
