@@ -49,6 +49,10 @@ const verifyDidToken = async (didToken: string) => {
   }
 };
 
+export const logout = async (ctx: Context) => {
+  // Logout
+};
+
 export const login = async (ctx: Context) => {
   const { value } = await ctx.request.body();
   const { email, didToken } = JSON.parse(value);
@@ -64,7 +68,7 @@ export const login = async (ctx: Context) => {
     user = await addUser({ email });
   }
   const payload: Payload = {
-    iss: user.email,
+    iss: user.email, // Put issuer here
     exp: setExpiration(new Date().getTime() + 60000),
   };
   const jwt = makeJwt({ key: JWT_SECRET_TOKEN, header, payload });
