@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codecasts</title>
+  <script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
+  <script>
+    const magic = new Magic("pk_test_751B9F06BA1ED8AE");
+    const serverUrl = "http://localhost:8000/"; // window.location.href;
+    const render = async () => {
+      /* Show login form if user is not logged in */
+      let html = `
+        <h1>Please sign up or login</h1>
+        <form onsubmit="handleLogin(event)">
+          <input type="email" name="email" required="required" placeholder="Enter your email" />
+          <button type="submit">Send</button>
+        </form>
+      `;
+      /* Get user data including email & apple count */
+      // let res = await fetch(`${serverUrl}login/`);
+      // if (res.status == 200) {
+      //   let userData = await res.json();
+      //   let appleCount = userData.appleCount;
+      //   let appleDisplay =
+      //     appleCount > 0 ? "🍎".repeat(appleCount) : "You have no apples...";
+      //   html = `
+      //     <h1>Current user: ${userData.email}</h1>
+      //     <div id="apple-count">${appleDisplay}</div>
+      //     <button onclick="handleBuyApple()">Buy Apple</button>
+      //     <button onclick="handleLogout()">Logout</button>
+      //   `;
+      // }
+      document.getElementById("app").innerHTML = html;
+    };
+
+    const handleLogin = async e => {
+      e.preventDefault();
+      const email = new FormData(e.target).get("email");
+      if (email) {
+        /* One-liner login 🤯 */
+        const didToken = await magic.auth.loginWithMagicLink({ email });
+        await fetch(`${serverUrl}login`, {
+          headers: new Headers({
+            Authorization: "Bearer " + didToken
+          }),
+          body: JSON.stringify({ email, didToken }),
+          withCredentials: true, 
+          credentials: "same-origin",
+          method: "POST",
+          mode: "no-cors"
+        });
+        render();
+      }
+    };
+
+    const handleLogout = async () => {
+      await fetch(`${serverUrl}logout`, { method: "POST" });
+      render();
+    };
+  </script>
+</head>
+<body onload="render()">
+  <div id="app">Loading...</div>
+</body>
+</html>
