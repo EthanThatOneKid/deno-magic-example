@@ -29,7 +29,7 @@ const findOrCreateUser = async (email: string): Promise<User> => {
 
 const generateJwt = (iss: string): Promise<string> => {
   const exp = setExpiration(new Date().getTime() + 60000);
-  const payload: Payload = {iss, exp};
+  const payload: Payload = { iss, exp };
   const jwt = makeJwt({ key: JWT_SECRET_TOKEN, header, payload });
   return jwt;
 };
