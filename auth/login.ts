@@ -19,18 +19,25 @@ const header: Jose = {
   typ: "JWT",
 };
 
-export const login = async (ctx: Context) => {
-  const { value } = await ctx.request.body();
-  const { email } = value; // JSON.parse(value);
+const findOrCreateUser = async (email: string): Promise<User> => {
   let user: User = await findUser({ email });
   if (user === null) {
     user = await addUser({ email });
   }
-  const payload: Payload = {
-    iss: user.email, // Magic Issuer Here
-    exp: setExpiration(new Date().getTime() + 60000),
-  };
+  return user;
+};
+
+const generateJwt = (iss: string): Promise<string> => {
+  const exp = setExpiration(new Date().getTime() + 60000);
+  const payload: Payload = {iss, exp};
   const jwt = makeJwt({ key: JWT_SECRET_TOKEN, header, payload });
+  return jwt;
+};
+
+export const login = async (ctx: Context) => {
+  const { value: { email } } = await ctx.request.body();
+  const user = await findOrCreateUser(email);
+  const jwt = generateJwt(email);
   if (jwt) {
     ctx.response.status = 200;
     ctx.response.body = { user, jwt };

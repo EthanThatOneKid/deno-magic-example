@@ -8,10 +8,10 @@ import {
 } from "./helpers.ts";
 
 const client = new MongoClient();
-const { MONGODB_URI } = config();
+const { MONGODB_URI, IS_DEV } = config();
 client.connectWithUri(MONGODB_URI);
 
-const isDev = Deno.env.get("IS_DEV") === "1";
+const isDev = IS_DEV === "1";
 const db = client.database(isDev ? "dev" : "production");
 const users = db.collection("users");
 
