@@ -35,8 +35,8 @@ const verifyDidToken = async (didToken: string) => {
   // const [proof, claim]: [string, Claim] = await admin.token.decode(didToken);
   // console.log({proof, claim});
   try {
-    const validation = await admin.token.validate(didToken);
-    console.log({ validation });
+    const validationError = await admin.token.validate(didToken);
+    console.log({ validationError });
     // This does not work correctly:
     const userMetadata = await admin.users.getMetadataByToken(didToken);
     console.log(userMetadata);
