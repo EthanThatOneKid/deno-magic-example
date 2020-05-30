@@ -25,17 +25,17 @@ const header: Jose = {
 
 const findOrCreateUser = async (
   metadata: MagicUserMetadata,
-  claim: Claim,
 ): Promise<User> => {
   const { email, issuer } = metadata;
-  const { iat: lastLoginAt } = claim;
   let user: User = await findUser({ email });
   if (user === null) {
-    user = await addUser({ email, issuer, lastLoginAt });
-  } else {
-    await updateUser({ issuer }, { lastLoginAt });
+    user = await addUser({ email, issuer });
   }
-  return { ...user, lastLoginAt };
+  return { ...user };
+};
+
+const updateLastLogin = async (issuer: string, lastLoginAt: number) => {
+  return await updateUser({ issuer }, { lastLoginAt });
 };
 
 const generateJwt = (iss: string): string => {
@@ -53,11 +53,12 @@ export const login = async (ctx: Context) => {
     return;
   }
   const { claim, metadata } = verification;
-  const user = await findOrCreateUser(metadata, claim);
+  const user = await findOrCreateUser(metadata);
   if (user.lastLoginAt !== undefined && claim.iat <= user.lastLoginAt) {
     console.log(`Replay attack detected for user ${user.issuer}}.`);
     return;
   }
+  await updateLastLogin(user.issuer as string, claim.iat);
   const jwt = generateJwt(claim.iss);
   if (jwt) {
     ctx.response.status = 200;
