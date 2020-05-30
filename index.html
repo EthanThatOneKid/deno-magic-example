@@ -8,6 +8,7 @@
   <script>
     const magic = new Magic("pk_test_751B9F06BA1ED8AE");
     const serverUrl = "http://localhost:8000/"; // window.location.href;
+    let decentralizedId = "";
     const render = async () => {
       /* Show login form if user is not logged in */
       let html = `
@@ -16,6 +17,7 @@
           <input type="email" name="email" required="required" placeholder="Enter your email" />
           <button type="submit">Send</button>
         </form>
+        <h1>DID Token: ${decentralizedId}</h1>
       `;
       /* Get user data including email & apple count */
       // let res = await fetch(`${serverUrl}login/`);
@@ -39,24 +41,19 @@
       const email = new FormData(e.target).get("email");
       if (email) {
         /* One-liner login 🤯 */
-        const didToken = await magic.auth.loginWithMagicLink({ email });
-        await fetch(`${serverUrl}login`, {
-          headers: new Headers({
-            Authorization: "Bearer " + didToken
-          }),
-          body: JSON.stringify({ email, didToken }),
-          withCredentials: true, 
-          credentials: "same-origin",
-          method: "POST",
-          mode: "no-cors"
-        });
+        decentralizedId = await magic.auth.loginWithMagicLink({ email });
+        // await fetch(`${serverUrl}login`, {
+        //   headers: new Headers({
+        //     Authorization: "Bearer " + didToken
+        //   }),
+        //   body: JSON.stringify({ email, didToken }),
+        //   withCredentials: true, 
+        //   credentials: "same-origin",
+        //   method: "POST",
+        //   mode: "no-cors"
+        // });
         render();
       }
-    };
-
-    const handleLogout = async () => {
-      await fetch(`${serverUrl}logout`, { method: "POST" });
-      render();
     };
   </script>
 </head>
