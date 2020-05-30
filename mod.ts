@@ -1,5 +1,5 @@
 import { Application, Router, Context } from "./deps.ts";
-import { login,authMiddleware } from "./auth/mod.ts";
+import { login, authMiddleware } from "./auth/mod.ts";
 
 const router = new Router();
 
@@ -11,7 +11,6 @@ router
       You: "are logged in",
     };
   });
-// .get('/guest', guest)
 
 const app = new Application();
 
