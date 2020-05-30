@@ -7,14 +7,14 @@ import {
   config,
 } from "../deps.ts";
 import {
-  verifyDidToken
+  verifyDidToken,
 } from "./magic.ts";
-import {Claim} from "../types/mod.ts";
+import { Claim, MagicUserMetadata } from "../types/mod.ts";
 import {
   addUser,
-  // updateUser,
   findUser,
   User,
+  updateUser,
 } from "../db/mod.ts";
 
 const { JWT_SECRET_TOKEN } = config();
@@ -23,12 +23,19 @@ const header: Jose = {
   typ: "JWT",
 };
 
-const findOrCreateUser = async (email: string, claim: Claim): Promise<User> => {
+const findOrCreateUser = async (
+  metadata: MagicUserMetadata,
+  claim: Claim,
+): Promise<User> => {
+  const { email, issuer } = metadata;
+  const { iat: lastLoginAt } = claim;
   let user: User = await findUser({ email });
   if (user === null) {
-    user = await addUser({ email });
+    user = await addUser({ email, issuer, lastLoginAt });
+  } else {
+    await updateUser({ issuer }, { lastLoginAt });
   }
-  return user;
+  return { ...user, lastLoginAt };
 };
 
 const generateJwt = (iss: string): string => {
@@ -39,15 +46,19 @@ const generateJwt = (iss: string): string => {
 };
 
 export const login = async (ctx: Context) => {
-  const { value: { email } } = await ctx.request.body();
-  const didToken = ctx.request.headers.get("Authorization")?.split(" ").pop();
-  const claim = await verifyDidToken(didToken);
-  if (claim === null) {
-    console.log("There was a problem")
+  const didToken = ctx.request.headers.get("Authorization")?.substring(7);
+  const verification = await verifyDidToken(didToken);
+  if (verification === null) {
+    console.log("There was a problem with Magic verification");
     return;
   }
-  const user = await findOrCreateUser(email, claim);
-  const jwt = generateJwt(email);
+  const { claim, metadata } = verification;
+  const user = await findOrCreateUser(metadata, claim);
+  if (user.lastLoginAt !== undefined && claim.iat <= user.lastLoginAt) {
+    console.log(`Replay attack detected for user ${user.issuer}}.`);
+    return;
+  }
+  const jwt = generateJwt(claim.iss);
   if (jwt) {
     ctx.response.status = 200;
     ctx.response.body = { user, jwt };

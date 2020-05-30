@@ -20,13 +20,12 @@ export const findUser = async (targetUser: User): Promise<User> => {
 };
 
 export const addUser = async (user: User): Promise<User> => {
-  let id: string;
   try {
-    id = await users.insertOne({ ...user });
+    await users.insertOne({ ...user });
   } catch (err) {
-    throw new Error("Failed at addUser");
+    console.log(err);
   }
-  return { ...user, id };
+  return { ...user };
 };
 
 export const updateUser = async (
@@ -34,13 +33,12 @@ export const updateUser = async (
   updatedUser: User,
 ): Promise<User> => {
   try {
-    const { upsertedId } = await users.updateOne(
+    await users.updateOne(
       userToQuery(targetUser),
       { $set: { ...updatedUser } },
     );
-    console.log({ upsertedId });
   } catch (err) {
-    throw new Error("Failed at addUser");
+    console.log(err);
   }
   return { ...targetUser, ...updatedUser };
 };
