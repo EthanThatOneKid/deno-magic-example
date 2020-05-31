@@ -1,8 +1,6 @@
 # Deno Magic Example 🦕✨
 > A Deno example utilizing Magic and JWT and MongoDB
 
-## (WIP)
-
 ## Develop 🔥
 1. To get started, [install deno](https://github.com/denoland/deno_install) to your machine.
 1. Clone this repository or create a new one using this repository as a [template](https://github.com/EthanThatOneKid/deno-magic-example/generate).
