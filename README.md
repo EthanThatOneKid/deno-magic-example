@@ -6,9 +6,6 @@
 1. Clone this repository or create a new one using this repository as a [template](https://github.com/EthanThatOneKid/deno-magic-example/generate).
 1. To spin the development server, enter the following command: `deno run --allow-net --allow-write --allow-read --allow-plugin --allow-env --unstable mod.ts`
 
-### Deploy 🚀
-1. Create an executable of the server by entering the following command: `deno install --allow-net --allow-write --allow-read --allow-plugin --allow-env --unstable mod.ts`
-
 ### Reference 📚
 * [Magic Full Stack Example](https://docs.magic.link/tutorials/full-stack-node-js)
 * [Passport Magic Repository](https://github.com/MagicHQ/passport-magic)
