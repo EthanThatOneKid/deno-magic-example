@@ -6,8 +6,9 @@
   <title>Codecasts</title>
   <script src="https://cdn.jsdelivr.net/npm/magic-sdk/dist/magic.js"></script>
   <script>
-    const magic = new Magic("pk_test_751B9F06BA1ED8AE");
-    const serverUrl = "http://localhost:8000/"; // window.location.href;
+    const MAGIC_PUBLISHABLE_KEY = "<YOUR_PUBLISHABLE_KEY_HERE>"; // Put your key here
+    const magic = new Magic(MAGIC_PUBLISHABLE_KEY);
+    const serverUrl = "http://localhost:8000/"; // window.location.host;
     let decentralizedId = "";
     const render = async () => {
       /* Show login form if user is not logged in */
