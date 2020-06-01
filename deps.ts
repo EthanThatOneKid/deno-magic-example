@@ -1,5 +1,10 @@
 // deno.land/x/
-export { Application, Router, Context } from "https://deno.land/x/oak/mod.ts";
+export {
+  Application,
+  Router,
+  Context,
+  RouterContext,
+} from "https://deno.land/x/oak/mod.ts";
 export { MongoClient } from "https://deno.land/x/mongo@v0.7.0/mod.ts";
 export { config } from "https://deno.land/x/dotenv/mod.ts";
 export { validateJwt, JwtObject } from "https://deno.land/x/djwt/validate.ts";

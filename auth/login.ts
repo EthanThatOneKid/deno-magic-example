@@ -1,5 +1,5 @@
 import {
-  Context,
+  RouterContext,
   setExpiration,
   Payload,
   Jose,
@@ -43,7 +43,7 @@ const generateJwt = (iss: string): string => {
   return jwt;
 };
 
-export const login = async (ctx: Context) => {
+export const login = async (ctx: RouterContext) => {
   const didToken = ctx.request.headers.get("Authorization")?.substring(7);
   const verification = await verifyDidToken(didToken);
   if (verification === null) {
