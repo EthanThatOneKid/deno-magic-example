@@ -35,27 +35,4 @@ export const protectionMiddleware = async (ctx: Context, next: Function) => {
   } else {
     ctx.response.redirect("/login");
   }
-  return;
-  const authorization = ctx.request.headers.get("Authorization");
-  if (!authorization) {
-    ctx.response.status = 401;
-    return;
-  }
-  const jwt = authorization.split(" ").pop();
-  if (!jwt) {
-    ctx.response.status = 401;
-    return;
-  }
-  const isValid = await validateJwt(
-    jwt,
-    JWT_SECRET_TOKEN,
-    { isThrowing: false },
-  );
-  if (isValid) {
-    await next();
-    return;
-  }
-  const message = "Invalid jwt token";
-  ctx.response.status = 401;
-  ctx.response.body = { message };
 };
