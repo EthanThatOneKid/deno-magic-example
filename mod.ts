@@ -1,11 +1,11 @@
 import { Application, Router, Context } from "./deps.ts";
-import { login, authMiddleware } from "./auth/mod.ts";
+import { login, protectionMiddleware, userMiddleware } from "./auth/mod.ts";
 
 const router = new Router();
 
 router
   .post("/login", login)
-  .get("/must-be-logged-in", authMiddleware, (ctx: Context) => {
+  .get("/must-be-logged-in", protectionMiddleware, (ctx: Context) => {
     ctx.response.status = 200;
     ctx.response.body = {
       You: "are logged in",
@@ -14,6 +14,7 @@ router
 
 const app = new Application();
 
+app.use(userMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods());
 

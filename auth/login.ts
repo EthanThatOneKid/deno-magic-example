@@ -7,15 +7,13 @@ import {
   config,
 } from "../deps.ts";
 import {
-  verifyDidToken,
-} from "./magic.ts";
-import { Claim, MagicUserMetadata } from "../types/mod.ts";
-import {
   addUser,
   findUser,
   User,
   updateUser,
 } from "../db/mod.ts";
+import { verifyDidToken } from "./magic.ts";
+import { MagicUserMetadata } from "../types/mod.ts";
 
 const { JWT_SECRET_TOKEN } = config();
 const header: Jose = {
@@ -59,14 +57,7 @@ export const login = async (ctx: Context) => {
     return;
   }
   await updateLastLogin(user.issuer as string, claim.iat);
-  const jwt = generateJwt(claim.iss);
-  if (jwt) {
-    ctx.response.status = 200;
-    ctx.response.body = { user, jwt };
-  } else {
-    const message = "Internal server error";
-    ctx.response.status = 500;
-    ctx.response.body = { message };
-  }
-  return;
+  ctx.cookies.set("jwt", generateJwt(claim.iss));
+  ctx.response.status = 200;
+  ctx.response.redirect("/");
 };
