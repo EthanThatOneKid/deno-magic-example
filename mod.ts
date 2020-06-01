@@ -1,10 +1,11 @@
 import { Application, Router, Context } from "./deps.ts";
-import { login, protectionMiddleware, userMiddleware } from "./auth/mod.ts";
+import { login, logout, protectionMiddleware, userMiddleware } from "./auth/mod.ts";
 
 const router = new Router();
 
 router
   .post("/login", login)
+  .post("/logout", logout)
   .get("/must-be-logged-in", protectionMiddleware, (ctx: Context) => {
     ctx.response.status = 200;
     ctx.response.body = {
