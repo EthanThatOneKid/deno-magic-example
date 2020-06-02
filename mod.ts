@@ -1,5 +1,10 @@
 import { Application, Router, Context } from "./deps.ts";
-import { login, logout, protectionMiddleware, userMiddleware } from "./auth/mod.ts";
+import {
+  login,
+  logout,
+  protectionMiddleware,
+  userMiddleware,
+} from "./auth/mod.ts";
 
 const router = new Router();
 
