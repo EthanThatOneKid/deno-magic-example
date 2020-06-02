@@ -30,7 +30,7 @@ export const userMiddleware = async (ctx: Context, next: Function) => {
 };
 
 export const protectionMiddleware = async (ctx: Context, next: Function) => {
-  if (ctx.state.currentUser) {
+  if (ctx.state.user !== null) {
     await next();
   } else {
     ctx.response.redirect("/login");
