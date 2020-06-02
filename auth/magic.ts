@@ -31,3 +31,11 @@ export const verifyDidToken = async (
     return null;
   }
 };
+
+export const logoutUserByIssuer = async (issuer: string) => {
+  try {
+    await admin.users.logoutByIssuer(issuer);
+  } catch ({ data }) {
+    console.log(data);
+  }
+};
