@@ -13,6 +13,7 @@ import {
   updateUser,
 } from "../db/mod.ts";
 import { verifyDidToken } from "./magic.ts";
+import { errors } from "./errors.ts";
 import { MagicUserMetadata } from "../types/mod.ts";
 
 const { JWT_SECRET_TOKEN } = config();
@@ -47,13 +48,13 @@ export const login = async (ctx: RouterContext) => {
   const didToken = ctx.request.headers.get("Authorization")?.substring(7);
   const verification = await verifyDidToken(didToken);
   if (verification === null) {
-    console.log("There was a problem with Magic verification");
+    errors.magicVerification(ctx);
     return;
   }
   const { claim, metadata } = verification;
   const user = await findOrCreateUser(metadata);
   if (user.lastLoginAt !== undefined && claim.iat <= user.lastLoginAt) {
-    console.log(`Replay attack detected for user ${user.issuer}}.`);
+    errors.relayAttack(ctx, user.issuer as string);
     return;
   }
   await updateLastLogin(user.issuer as string, claim.iat);
