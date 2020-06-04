@@ -6,7 +6,7 @@ import {
   userMiddleware,
 } from "./auth/mod.ts";
 
-const {PORT}=config();
+const { PORT } = config();
 const router = new Router();
 
 router
