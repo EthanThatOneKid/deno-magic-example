@@ -1,4 +1,4 @@
-import { Application, Router, Context } from "./deps.ts";
+import { Application, Router, Context, config } from "./deps.ts";
 import {
   login,
   logout,
@@ -6,6 +6,7 @@ import {
   userMiddleware,
 } from "./auth/mod.ts";
 
+const {PORT}=config();
 const router = new Router();
 
 router
@@ -25,5 +26,5 @@ app.use(userMiddleware);
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-app.listen({ port: 8000 });
-console.log("Started on port: 8000");
+app.listen(PORT);
+console.log(`Listening on port ${PORT}`);
